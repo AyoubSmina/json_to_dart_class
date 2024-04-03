@@ -1,7 +1,7 @@
-name: json_to_dart
+name: json_to_dart_class_class
 description: A starting point for Dart libraries or applications.
 version: 1.0.0
-homepage: https://github.com/AyoubSmina/json_to_dart
+homepage: https://github.com/AyoubSmina/json_to_dart_class
 
 license: MIT
 
