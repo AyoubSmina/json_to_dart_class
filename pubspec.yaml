@@ -1,5 +1,6 @@
-name: json_to_dart_class_class
-description: A starting point for Dart libraries or applications.
+name: json_to_dart_class
+description: This Dart package, **json_to_dart_class**, facilitates the generation of Dart class files from JSON data. It provides a convenient way to convert JSON structures into corresponding Dart classes, making it easier to work with JSON data in Dart applications.
+
 version: 1.0.0
 homepage: https://github.com/AyoubSmina/json_to_dart_class
 
@@ -11,3 +12,4 @@ environment:
 dev_dependencies:
   lints: ^2.1.0
   test: ^1.24.0
+

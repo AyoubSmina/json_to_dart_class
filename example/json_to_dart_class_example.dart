@@ -1,4 +1,4 @@
-import 'package:json_to_dart_class_class/json_to_dart_class.dart';
+import 'package:json_to_dart_class/json_to_dart_class.dart';
 void main() {
   var json = {
     "image_versions2": {
