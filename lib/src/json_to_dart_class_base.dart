@@ -183,11 +183,22 @@ String _getType(dynamic value) {
   }
 }
 
+// String _toUpperCamelCase(String input) {
+//   final Set<String> parts = input.split('_').toSet();
+//   return parts
+//       .map((part) => part.substring(0, 1).toUpperCase() + part.substring(1))
+//       .join('');
+// }
+
 String _toUpperCamelCase(String input) {
   final Set<String> parts = input.split('_').toSet();
-  return parts
-      .map((part) => part.substring(0, 1).toUpperCase() + part.substring(1))
-      .join('');
+  return parts.map((part) {
+    var el = part.toString().split('');
+    if (el.isNotEmpty) {
+      return el.first.toUpperCase() + part.substring(1);
+    }
+    return el.join('');
+  }).join('');
 }
 
 String _toUpperCamelCaseKey(String input) {
