@@ -34,6 +34,16 @@ void jsonToDart(
   _generateConstructorArgs(json, buffer);
   buffer.writeln('    );');
   buffer.writeln('  }');
+  buffer.writeln();
+
+
+  // Generate fromOriginJson method
+  buffer
+      .writeln('  factory $className.fromOriginJson(Map<String, dynamic> json) {');
+  buffer.writeln('    return $className(');
+  _generateFBConstructorArgs(json, buffer);
+  buffer.writeln('    );');
+  buffer.writeln('  }');
   buffer.writeln('}');
   buffer.writeln();
 
@@ -151,12 +161,12 @@ void _generateFBConstructorArgs(
   json.forEach((key, value) {
     if (value is Map) {
       constructorArgs.add(
-          '\$${_toUpperCamelCaseKey(key)}: ${_toUpperCamelCase(key.toString())}Class.fromFBJson(json[\'$key\']),');
+          '\$${_toUpperCamelCaseKey(key)}: ${_toUpperCamelCase(key.toString())}Class.fromOriginJson(json[\'$key\']),');
       // _generateConstructorArgs(value, buffer);
     } else if (value is List) {
       if (value.isNotEmpty && value.first is Map) {
         constructorArgs.add(
-            '\$${_toUpperCamelCaseKey(key)}: List.from(json[\'$key\']).map((item) => ${_toUpperCamelCase(key.toString())}ItemClass.fromFBJson(item)).toList(),');
+            '\$${_toUpperCamelCaseKey(key)}: List.from(json[\'$key\']).map((item) => ${_toUpperCamelCase(key.toString())}ItemClass.fromOriginJson(item)).toList(),');
       } else {
         constructorArgs.add('\$${_toUpperCamelCaseKey(key)}: json[\'$key\'],');
       }
