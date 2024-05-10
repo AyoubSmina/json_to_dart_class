@@ -5,18 +5,20 @@ import 'dart:io';
 
 Set<String> generatedClassNames = {}; // Track generated class names
 
-Future<void> createFolder(String folderName) async {
-  final directoryPath = folderName;
-  final directory = Directory(directoryPath);
-
-  if (await directory.exists()) {
-    // Handle existing folder (e.g., print a message)
-    print('Folder "$folderName" already exists.');
-  } else {
-    // Create the directory
-    await directory.create(recursive: true);
-    print('Folder "$folderName" created successfully.');
-  }
+Future wrap(
+    {required Map<dynamic, dynamic> json,
+    required String className,
+    required String library,
+    required String folderPath}) async {
+  await createFolder(folderPath);
+  await jsonToDart(
+    json: json,
+    className: className,
+    library: library,
+    folderPath: folderPath,
+  );
+  // print('Dart class generated successfully: $classFileName');
+  generateIndexFile(library,folderPath);
 }
 
 Future<void> jsonToDart(
@@ -24,13 +26,12 @@ Future<void> jsonToDart(
     required String className,
     required String library,
     required String folderPath}) async {
-  await createFolder(folderPath);
   final StringBuffer buffer = StringBuffer();
   className = className[0].toUpperCase() + className.substring(1);
   var filename = convertToSnakeCase(className);
   // Generate class definition
   buffer.writeln(
-      'part of $folderPath;'); // Added line to indicate this class is part of the library
+      'part of $library;'); // Added line to indicate this class is part of the library
   buffer.writeln();
 
   // Generate class definition
@@ -78,14 +79,14 @@ Future<void> jsonToDart(
     if (value is Map) {
       jsonToDart(
           json: value,
-          library:library,
+          library: library,
           className: '${_toUpperCamelCase(key.toString())}Class',
           folderPath: folderPath);
     } else if (value is List) {
       if (value.isNotEmpty && value.first is Map) {
         jsonToDart(
           json: value.first,
-          library:library,
+          library: library,
           className: '${_toUpperCamelCase(key.toString())}ItemClass',
           folderPath: folderPath,
         );
@@ -97,9 +98,20 @@ Future<void> jsonToDart(
   final classFileName = '$folderPath/$filename.dart';
   final classFile = File(classFileName);
   classFile.writeAsStringSync(buffer.toString());
+}
 
-  print('Dart class generated successfully: $classFileName');
-  generateIndexFile(library);
+Future<void> createFolder(String folderName) async {
+  final directoryPath = folderName;
+  final directory = Directory(directoryPath);
+
+  if (await directory.exists()) {
+    // Handle existing folder (e.g., print a message)
+    print('Folder "$folderName" already exists.');
+  } else {
+    // Create the directory
+    await directory.create(recursive: true);
+    print('Folder "$folderName" created successfully.');
+  }
 }
 
 void _generateFields(Map<dynamic, dynamic> json, StringBuffer buffer) {
@@ -229,7 +241,6 @@ String _getType(dynamic value) {
   }
 }
 
-
 String _toUpperCamelCase(String input) {
   final Set<String> parts = input.split('_').toSet();
   return parts.map((part) {
@@ -258,24 +269,25 @@ String _toUpperCamelCaseKey(String input) {
   }
 }
 
-void generateIndexFile(String library) {
-  final StringBuffer buffer = StringBuffer();
+void generateIndexFile(String library, folderPath) {
+  try {
+    final StringBuffer buffer = StringBuffer();
 
-  // Write library directive
-  buffer.writeln('library $library;');
-  buffer.writeln();
+    // Write library directive
+    buffer.writeln('library $library;');
+    buffer.writeln();
 
- 
-  for (var element in generatedClassNames) {
-    buffer.writeln("part '$element.dart';");
-  }
+    for (var element in generatedClassNames) {
+      buffer.writeln("part '$element.dart';");
+    }
 
-  // Write to file
-  final indexFileName = '$library/index.dart';
-  final indexFile = File(indexFileName);
-  indexFile.writeAsStringSync(buffer.toString());
+    // Write to file
+    final indexFileName = '$folderPath/index.dart';
+    final indexFile = File(indexFileName);
+    indexFile.writeAsStringSync(buffer.toString());
 
-  print('Index file generated successfully: $indexFileName');
+    print('Index file generated successfully: $indexFileName');
+  } catch (_) {}
 }
 
 String convertToSnakeCase(String input) {
