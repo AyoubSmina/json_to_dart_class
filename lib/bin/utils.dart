@@ -1,6 +1,6 @@
 part of index;
 
-String _getType(dynamic value) {
+String getType(dynamic value) {
   if (value is String) {
     return 'String';
   } else if (value is int) {
@@ -16,7 +16,7 @@ String _getType(dynamic value) {
   }
 }
 
-String _toUpperCamelCase(String input) {
+String toUpperCamelCase(String input) {
   final Set<String> parts = input.split('_').toSet();
   return parts.map((part) {
     var el = part.toString().split('');
@@ -27,7 +27,7 @@ String _toUpperCamelCase(String input) {
   }).join('');
 }
 
-String _toUpperCamelCaseKey(String input) {
+String toUpperCamelCaseKey(String input) {
   final List<String> parts = input.split('_');
   if (parts.length > 1) {
     var str = parts.first;

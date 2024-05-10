@@ -1,6 +1,6 @@
 library;
 
-
+import 'package:json_to_dart_class/bin/index.dart';
 
 Future jsonToDart(
     {required Map<dynamic, dynamic> json,

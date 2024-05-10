@@ -1,4 +1,6 @@
-# JSON to Dart
+Here's the edited readme content to be responsive with the new example:
+
+## JSON to Dart
 
 This Dart package, **json_to_dart_class**, facilitates the generation of Dart class files from JSON data. It provides a convenient way to convert JSON structures into corresponding Dart classes, making it easier to work with JSON data in Dart applications.
 
@@ -15,7 +17,11 @@ Then, run `flutter pub get` to install the package.
 
 ## Usage
 
-Below is an example demonstrating how to use **json_to_dart_class** to generate Dart classes from JSON data:
+The package offers two main ways to generate Dart classes:
+
+**1. Simple Usage:**
+
+This approach is ideal for basic JSON structures. Below is an example demonstrating how to use it:
 
 ```dart
 import 'package:json_to_dart_class/json_to_dart_class.dart';
@@ -48,11 +54,63 @@ void main() {
 
 This will generate a Dart class file named `person.dart` inside the specified folder (`lib/models`) with the corresponding Dart class for the provided JSON structure.
 
+**2. Advanced Usage with Options:**
+
+This approach provides more control over the generated code. Here's an example demonstrating advanced usage:
+
+```dart
+import 'package:json_to_dart_class/json_to_dart_class.dart';
+
+void main() async {
+  var json = {
+    "status": "success", 
+    "age": 32, 
+    "feed": {
+      "len": 10, 
+      "wd": "Sunny", 
+      "speed": 25.0, 
+      "location": {
+        "address": "123 Main Street", 
+        "postal_code": "12345",
+        "city": "Miami", 
+      },
+      "childs": [
+        {
+          "name": "Emily", 
+          "age": 8 
+        },
+        {
+          "name": "David", 
+          "age": 5 
+        },
+        {
+          "name": "Sarah", 
+          "age": 12 
+        }
+      ]
+    }
+  };
+
+  await jsonToDart(
+    json: json,
+    className: 'WeatherData', // Class name for the main structure
+    library: 'weather',      // Library name for generated code
+    folderPath: 'src/weather', // Folder path for generated files
+  );
+}
+```
+
+This will generate multiple class files:
+
+- `weather_data.dart` containing the `WeatherData` class for the main structure.
+- Nested classes for objects within the `feed` object (e.g., `Location`, `Child`).
+
 ## Features
 
 - Generates Dart class files from JSON data
 - Supports nested JSON structures
 - Handles different data types (String, int, double, bool, List, Map)
+- Offers options for advanced usage (library name, folder path)
 
 ## Contributing
 

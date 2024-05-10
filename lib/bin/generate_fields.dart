@@ -1,10 +1,10 @@
 part of index;
 
-void _generateFields(Map<dynamic, dynamic> json, StringBuffer buffer) {
+void generateFields(Map<dynamic, dynamic> json, StringBuffer buffer) {
   json.forEach((key, value) {
     if (value is Map) {
       buffer.writeln(
-          '  final ${_toUpperCamelCase(key.toString())}Class \$${_toUpperCamelCaseKey(key)};');
+          '  final ${toUpperCamelCase(key.toString())}Class \$${toUpperCamelCaseKey(key)};');
     } else if (value is List) {
       var type = 'dynamic';
       if (value.isNotEmpty) {
@@ -19,13 +19,13 @@ void _generateFields(Map<dynamic, dynamic> json, StringBuffer buffer) {
         } else if (value.first == null) {
           type = 'dynamic';
         } else {
-          type = '${_toUpperCamelCase(key.toString())}ItemClass';
+          type = '${toUpperCamelCase(key.toString())}ItemClass';
         }
       }
-      buffer.writeln('  final List<$type> \$${_toUpperCamelCaseKey(key)};');
+      buffer.writeln('  final List<$type> \$${toUpperCamelCaseKey(key)};');
     } else {
-      buffer.writeln(
-          '  final ${_getType(value)} \$${_toUpperCamelCaseKey(key)};');
+      buffer
+          .writeln('  final ${getType(value)} \$${toUpperCamelCaseKey(key)};');
     }
   });
 }

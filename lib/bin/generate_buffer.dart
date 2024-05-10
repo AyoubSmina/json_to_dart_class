@@ -15,19 +15,19 @@ Future<void> generateBuffer(
 
   // Generate class definition
   buffer.writeln('class $className {');
-  _generateFields(json, buffer);
+  generateFields(json, buffer);
   buffer.writeln();
 
   // Generate constructor
   buffer.writeln('  $className({');
-  _generateConstructorParams(json, buffer);
+  generateConstructorParams(json, buffer);
   buffer.writeln('  });');
   buffer.writeln();
 
   // Generate fromJson method
   buffer.writeln('  factory $className.fromJson(Map<String, dynamic> json) {');
   buffer.writeln('    return $className(');
-  _generate$fromJson(json, buffer);
+  generate$fromJson(json, buffer);
   buffer.writeln('    );');
   buffer.writeln('  }');
   buffer.writeln();
@@ -36,7 +36,7 @@ Future<void> generateBuffer(
   buffer.writeln(
       '  factory $className.fromOriginJson(Map<String, dynamic> json) {');
   buffer.writeln('    return $className(');
-  _generate$fromOriginJson(json, buffer);
+  generate$fromOriginJson(json, buffer);
   buffer.writeln('    );');
   buffer.writeln('  }');
   buffer.writeln();
@@ -44,7 +44,7 @@ Future<void> generateBuffer(
   // Generate toMap method
   buffer.writeln('  Map<String,dynamic> toMap() {');
   buffer.writeln('    return {');
-  _generate$toMap(json, buffer);
+  generate$toMap(json, buffer);
   buffer.writeln('    };');
   buffer.writeln('  }');
   buffer.writeln('}');
@@ -59,14 +59,14 @@ Future<void> generateBuffer(
       generateBuffer(
           json: value,
           library: library,
-          className: '${_toUpperCamelCase(key.toString())}Class',
+          className: '${toUpperCamelCase(key.toString())}Class',
           folderPath: folderPath);
     } else if (value is List) {
       if (value.isNotEmpty && value.first is Map) {
         generateBuffer(
           json: value.first,
           library: library,
-          className: '${_toUpperCamelCase(key.toString())}ItemClass',
+          className: '${toUpperCamelCase(key.toString())}ItemClass',
           folderPath: folderPath,
         );
       }

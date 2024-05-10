@@ -3,23 +3,31 @@ import 'package:test/scaffolding.dart';
 
 main() {
   group('test json to dart class', () {
-    test('generate class', ()async {
-      var json = {"status": "ok", "age": 23 , "feed":{
-        "len":120,
-        "wd":"WeeeD",
-        "speed":199.33,
-        "location":{
-          "adress":"Here here",
-          "post":12334,
-          "city":"florida",
-        },
-          "child":[
-            {"name": "kamal", "age": 42},
-            {"name": "alal", "age": 2},
-            {"name": "malak", "age": 22},
+    test('generate class', () async {
+      var json = {
+        "status": "success",
+        "age": 32,
+        "feed": {
+          "len": 10,
+          "wd": "Sunny",
+          "speed": 25.0,
+          "location": {
+            "address": "123 Main Street",
+            "postal_code": "12345",
+            "city": "Miami",
+          },
+          "childs": [
+            {"name": "Emily", "age": 8},
+            {"name": "David", "age": 5},
+            {"name": "Sarah", "age": 12}
           ]
-      }};
-     await jsonToDart(json: json, className: 'persson', library:'persson', folderPath: 'persson');
+        }
+      };
+      await jsonToDart(
+          json: json,
+          className: 'persson',
+          library: 'persson',
+          folderPath: 'src/persson');
     });
   });
 }
