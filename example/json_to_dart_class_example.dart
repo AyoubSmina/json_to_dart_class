@@ -19,5 +19,5 @@ void main() {
     },
   };
 
-  jsonToDart(json: json, className: 'example', folderPath: 'example');
+  jsonToDart(json: json, className: 'example', library:"example" , folderPath: 'example');
 }

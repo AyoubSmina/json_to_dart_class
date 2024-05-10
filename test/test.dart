@@ -19,7 +19,7 @@ main() {
             {"name": "malak", "age": 22},
           ]
       }};
-     await jsonToDart(json: json, className: 'persson', folderPath: 'lib/bin/persson');
+     await jsonToDart(json: json, className: 'persson', library:'persson', folderPath: 'lib/bin/persson');
     });
   });
 }

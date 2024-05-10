@@ -22,6 +22,7 @@ Future<void> createFolder(String folderName) async {
 Future<void> jsonToDart(
     {required Map<dynamic, dynamic> json,
     required String className,
+    required String library,
     required String folderPath}) async {
   await createFolder(folderPath);
   final StringBuffer buffer = StringBuffer();
@@ -77,12 +78,14 @@ Future<void> jsonToDart(
     if (value is Map) {
       jsonToDart(
           json: value,
+          library:library,
           className: '${_toUpperCamelCase(key.toString())}Class',
           folderPath: folderPath);
     } else if (value is List) {
       if (value.isNotEmpty && value.first is Map) {
         jsonToDart(
           json: value.first,
+          library:library,
           className: '${_toUpperCamelCase(key.toString())}ItemClass',
           folderPath: folderPath,
         );
@@ -96,7 +99,7 @@ Future<void> jsonToDart(
   classFile.writeAsStringSync(buffer.toString());
 
   print('Dart class generated successfully: $classFileName');
-  generateIndexFile(folderPath);
+  generateIndexFile(library);
 }
 
 void _generateFields(Map<dynamic, dynamic> json, StringBuffer buffer) {
@@ -255,11 +258,11 @@ String _toUpperCamelCaseKey(String input) {
   }
 }
 
-void generateIndexFile(String folderPath) {
+void generateIndexFile(String library) {
   final StringBuffer buffer = StringBuffer();
 
   // Write library directive
-  buffer.writeln('library $folderPath;');
+  buffer.writeln('library $library;');
   buffer.writeln();
 
  
@@ -268,7 +271,7 @@ void generateIndexFile(String folderPath) {
   }
 
   // Write to file
-  final indexFileName = '$folderPath/index.dart';
+  final indexFileName = '$library/index.dart';
   final indexFile = File(indexFileName);
   indexFile.writeAsStringSync(buffer.toString());
 
