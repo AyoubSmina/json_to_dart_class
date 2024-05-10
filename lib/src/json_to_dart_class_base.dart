@@ -5,10 +5,25 @@ import 'dart:io';
 
 Set<String> generatedClassNames = {}; // Track generated class names
 
-void jsonToDart(
+Future<void> createFolder(String folderName) async {
+  final directoryPath = folderName;
+  final directory = Directory(directoryPath);
+
+  if (await directory.exists()) {
+    // Handle existing folder (e.g., print a message)
+    print('Folder "$folderName" already exists.');
+  } else {
+    // Create the directory
+    await directory.create(recursive: true);
+    print('Folder "$folderName" created successfully.');
+  }
+}
+
+Future<void> jsonToDart(
     {required Map<dynamic, dynamic> json,
     required String className,
-    required String folderPath}) {
+    required String folderPath}) async {
+  await createFolder(folderPath);
   final StringBuffer buffer = StringBuffer();
   className = className[0].toUpperCase() + className.substring(1);
   var filename = convertToSnakeCase(className);
@@ -31,18 +46,25 @@ void jsonToDart(
   // Generate fromJson method
   buffer.writeln('  factory $className.fromJson(Map<String, dynamic> json) {');
   buffer.writeln('    return $className(');
-  _generateConstructorArgs(json, buffer);
+  _generate$fromJson(json, buffer);
   buffer.writeln('    );');
   buffer.writeln('  }');
   buffer.writeln();
 
-
   // Generate fromOriginJson method
-  buffer
-      .writeln('  factory $className.fromOriginJson(Map<String, dynamic> json) {');
+  buffer.writeln(
+      '  factory $className.fromOriginJson(Map<String, dynamic> json) {');
   buffer.writeln('    return $className(');
-  _generateFBConstructorArgs(json, buffer);
+  _generate$fromOriginJson(json, buffer);
   buffer.writeln('    );');
+  buffer.writeln('  }');
+  buffer.writeln();
+
+  // Generate toMap method
+  buffer.writeln('  Map<String,dynamic> toMap() {');
+  buffer.writeln('    return {');
+  _generate$toMap(json, buffer);
+  buffer.writeln('    };');
   buffer.writeln('  }');
   buffer.writeln('}');
   buffer.writeln();
@@ -64,9 +86,6 @@ void jsonToDart(
           className: '${_toUpperCamelCase(key.toString())}ItemClass',
           folderPath: folderPath,
         );
-      } else {
-        // throw ArgumentError(
-        //     'Unsupported list type for $key: ${value.runtimeType}');
       }
     }
   });
@@ -85,7 +104,6 @@ void _generateFields(Map<dynamic, dynamic> json, StringBuffer buffer) {
     if (value is Map) {
       buffer.writeln(
           '  final ${_toUpperCamelCase(key.toString())}Class \$${_toUpperCamelCaseKey(key)};');
-      // _generateFields(value, buffer);
     } else if (value is List) {
       var type = 'dynamic';
       if (value.isNotEmpty) {
@@ -104,9 +122,6 @@ void _generateFields(Map<dynamic, dynamic> json, StringBuffer buffer) {
         }
       }
       buffer.writeln('  final List<$type> \$${_toUpperCamelCaseKey(key)};');
-      // if (value.isNotEmpty && value.first is Map) {
-      //   _generateFields(value.first, buffer);
-      // }
     } else {
       buffer.writeln(
           '  final ${_getType(value)} \$${_toUpperCamelCaseKey(key)};');
@@ -121,7 +136,6 @@ void _generateConstructorParams(
     if (value is Map) {
       buffer.writeln('    required this.\$${_toUpperCamelCaseKey(key)},');
       constructorParams.add('this.\$${_toUpperCamelCaseKey(key)}');
-      // _generateConstructorParams(value, buffer);
     } else if (value is List) {
       buffer.writeln('    required this.\$${_toUpperCamelCaseKey(key)},');
       constructorParams.add('this.\$${_toUpperCamelCaseKey(key)}');
@@ -132,13 +146,12 @@ void _generateConstructorParams(
   });
 }
 
-void _generateConstructorArgs(Map<dynamic, dynamic> json, StringBuffer buffer) {
+void _generate$fromJson(Map<dynamic, dynamic> json, StringBuffer buffer) {
   final List<String> constructorArgs = [];
   json.forEach((key, value) {
     if (value is Map) {
       constructorArgs.add(
           '\$${_toUpperCamelCaseKey(key)}: ${_toUpperCamelCase(key.toString())}Class.fromJson(json[\'${_toUpperCamelCaseKey(key)}\']),');
-      // _generateConstructorArgs(value, buffer);
     } else if (value is List) {
       if (value.isNotEmpty && value.first is Map) {
         constructorArgs.add(
@@ -155,14 +168,12 @@ void _generateConstructorArgs(Map<dynamic, dynamic> json, StringBuffer buffer) {
   buffer.writeln('    ${constructorArgs.join('\n    ')}');
 }
 
-void _generateFBConstructorArgs(
-    Map<dynamic, dynamic> json, StringBuffer buffer) {
+void _generate$fromOriginJson(Map<dynamic, dynamic> json, StringBuffer buffer) {
   final List<String> constructorArgs = [];
   json.forEach((key, value) {
     if (value is Map) {
       constructorArgs.add(
           '\$${_toUpperCamelCaseKey(key)}: ${_toUpperCamelCase(key.toString())}Class.fromOriginJson(json[\'$key\']),');
-      // _generateConstructorArgs(value, buffer);
     } else if (value is List) {
       if (value.isNotEmpty && value.first is Map) {
         constructorArgs.add(
@@ -172,6 +183,28 @@ void _generateFBConstructorArgs(
       }
     } else {
       constructorArgs.add('\$${_toUpperCamelCaseKey(key)}: json[\'$key\'],');
+    }
+  });
+  buffer.writeln('    ${constructorArgs.join('\n    ')}');
+}
+
+void _generate$toMap(Map<dynamic, dynamic> json, StringBuffer buffer) {
+  final List<String> constructorArgs = [];
+  json.forEach((key, value) {
+    if (value is Map) {
+      constructorArgs.add(
+          '"${_toUpperCamelCaseKey(key)}": \$${_toUpperCamelCaseKey(key)}.toMap(),');
+    } else if (value is List) {
+      if (value.isNotEmpty && value.first is Map) {
+        constructorArgs.add(
+            '"${_toUpperCamelCaseKey(key)}": List<${_toUpperCamelCase(key.toString())}ItemClass>.from(\$${_toUpperCamelCaseKey(key)}).map((item) => item.toMap()).toList(),');
+      } else {
+        constructorArgs.add(
+            '"${_toUpperCamelCaseKey(key)}": \$${_toUpperCamelCaseKey(key)},');
+      }
+    } else {
+      constructorArgs.add(
+          '"${_toUpperCamelCaseKey(key)}": \$${_toUpperCamelCaseKey(key)},');
     }
   });
   buffer.writeln('    ${constructorArgs.join('\n    ')}');
@@ -193,12 +226,6 @@ String _getType(dynamic value) {
   }
 }
 
-// String _toUpperCamelCase(String input) {
-//   final Set<String> parts = input.split('_').toSet();
-//   return parts
-//       .map((part) => part.substring(0, 1).toUpperCase() + part.substring(1))
-//       .join('');
-// }
 
 String _toUpperCamelCase(String input) {
   final Set<String> parts = input.split('_').toSet();
@@ -235,14 +262,7 @@ void generateIndexFile(String folderPath) {
   buffer.writeln('library $folderPath;');
   buffer.writeln();
 
-  // buffer.writeln("import 'generated_class2.dart';");
-  // // Add import statements for other generated classes as needed
-
-  // // Write parts directive
-  // buffer.writeln();
-  // buffer.writeln('part \'generated_class1.dart\';');
-  // buffer.writeln('part \'generated_class2.dart\';');
-  // Add part statements for other generated classes as needed
+ 
   for (var element in generatedClassNames) {
     buffer.writeln("part '$element.dart';");
   }
