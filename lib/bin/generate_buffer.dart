@@ -19,10 +19,15 @@ Future<void> generateBuffer(
   buffer.writeln();
 
   // Generate constructor
-  buffer.writeln('  $className({');
-  generateConstructorParams(json, buffer);
-  buffer.writeln('  });');
-  buffer.writeln();
+  if (json.isNotEmpty) {
+    buffer.writeln('  $className({');
+    generateConstructorParams(json, buffer);
+    buffer.writeln('  });');
+    buffer.writeln();
+  } else {
+    buffer.writeln('  $className();');
+    buffer.writeln();
+  }
 
   // Generate fromJson method
   buffer.writeln('  factory $className.fromJson(Map<String, dynamic> json) {');

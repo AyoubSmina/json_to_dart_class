@@ -18,13 +18,21 @@ String getType(dynamic value) {
 
 String toUpperCamelCase(String input) {
   final Set<String> parts = input.split('_').toSet();
-  return parts.map((part) {
+  var res = parts.map((part) {
     var el = part.toString().split('');
     if (el.isNotEmpty) {
-      return el.first.toUpperCase() + part.substring(1);
+      var firstChar = el.first;
+      try {
+        // check if first character is number
+        int.parse(firstChar);
+        return 'N' + el.first.toUpperCase() + part.substring(1);
+      } catch (e) {
+        return el.first.toUpperCase() + part.substring(1);
+      }
     }
     return el.join('');
   }).join('');
+  return removeAddons(res);
 }
 
 String toUpperCamelCaseKey(String input) {
@@ -33,23 +41,26 @@ String toUpperCamelCaseKey(String input) {
     var str = parts.first;
     str += parts.sublist(1).map((e) {
       if (e.length > 1) {
-        return '${e[0].toUpperCase()}${e.substring(1)}';
+        return removeAddons('${e[0].toUpperCase()}${e.substring(1)}');
       }
-      return e;
+      return removeAddons(e);
     }).join('');
 
-    return str;
+    return removeAddons(str);
   } else {
-    return input;
+    return removeAddons(input);
   }
 }
 
 String convertToSnakeCase(String input) {
   String result = input.replaceAllMapped(RegExp(r'[A-Z]'), (match) {
-    return "_${match.group(0)!.toLowerCase()}";
+    return removeAddons("_${match.group(0)!.toLowerCase()}");
   });
   if (result.startsWith('_')) {
     result = result.substring(1);
   }
-  return result;
+  return removeAddons(result);
 }
+
+String removeAddons(String str) =>
+    str.replaceAll(':', r'_').replaceAll('-', r'_');
