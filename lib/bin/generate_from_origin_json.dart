@@ -11,7 +11,7 @@ void generate$fromOriginJson(Map<dynamic, dynamic> json, StringBuffer buffer) {
         constructorArgs.add(
             '\$${toUpperCamelCaseKey(key)}: List.from(json[\'$key\']).map((item) => ${toUpperCamelCase(key.toString())}ItemClass.fromOriginJson(item)).toList(),');
       } else {
-        constructorArgs.add('\$${toUpperCamelCaseKey(key)}: json[\'$key\'],');
+        constructorArgs.add('\$${toUpperCamelCaseKey(key)}: List.from(json[\'$key\'] ?? []),');
       }
     } else {
       constructorArgs.add('\$${toUpperCamelCaseKey(key)}: json[\'$key\'],');

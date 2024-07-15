@@ -12,7 +12,7 @@ void generate$fromJson(Map<dynamic, dynamic> json, StringBuffer buffer) {
             '\$${toUpperCamelCaseKey(key)}: List.from(json[\'$key\']).map((item) => ${toUpperCamelCase(key.toString())}ItemClass.fromJson(item)).toList(),');
       } else {
         constructorArgs.add(
-            '\$${toUpperCamelCaseKey(key)}: json[\'${toUpperCamelCaseKey(key)}\'],');
+            '\$${toUpperCamelCaseKey(key)}: List.from(json[\'${toUpperCamelCaseKey(key)}\'] ?? []),');
       }
     } else {
       constructorArgs.add(
