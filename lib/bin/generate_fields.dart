@@ -11,9 +11,11 @@ void generateFields(Map<dynamic, dynamic> json, StringBuffer buffer) {
         if (value.first is String) {
           type = 'String';
         } else if (value.first is int) {
-          type = 'int';
+          // type = 'int';
+          type = 'num';
         } else if (value.first is double) {
-          type = 'double';
+          // type = 'double';
+          type = 'num';
         } else if (value.first is bool) {
           type = 'bool';
         } else if (value.first == null) {

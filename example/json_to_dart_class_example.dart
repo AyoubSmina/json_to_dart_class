@@ -2,30 +2,21 @@ import 'package:json_to_dart_class/json_to_dart_class.dart';
 
 void main() async {
   var json = {
-    "status": "success", 
-    "age": 32, 
+    "status": "success",
+    "age": 32,
     "feed": {
-      "len": 10, 
-      "wd": "Sunny", 
-      "speed": 25.0, 
+      "len": 10,
+      "wd": "Sunny",
+      "speed": 25.0,
       "location": {
-        "address": "123 Main Street", 
+        "address": "123 Main Street",
         "postal_code": "12345",
-        "city": "Miami", 
+        "city": "Miami",
       },
       "childs": [
-        {
-          "name": "Emily", 
-          "age": 8 
-        },
-        {
-          "name": "David", 
-          "age": 5 
-        },
-        {
-          "name": "Sarah", 
-          "age": 12 
-        }
+        {"name": "Emily", "age": 8},
+        {"name": "David", "age": 5},
+        {"name": "Sarah", "age": 12}
       ]
     }
   };

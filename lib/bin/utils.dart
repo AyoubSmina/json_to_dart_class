@@ -4,9 +4,11 @@ String getType(dynamic value) {
   if (value is String) {
     return 'String';
   } else if (value is int) {
-    return 'int';
+    // return 'int';
+    return 'num';
   } else if (value is double) {
-    return 'double';
+    // return 'double';
+    return 'num';
   } else if (value is bool) {
     return 'bool';
   } else if (value == null) {
